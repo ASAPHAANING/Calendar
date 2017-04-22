@@ -30,66 +30,9 @@ public class MainUI extends UI {
 
     private void initLayout() {
         VerticalLayout layout = new VerticalLayout();
-        layout.setMargin(true);
-        layout.setSizeFull();
 
-        VerticalLayout centerLayout = new VerticalLayout();
-        centerLayout.setSpacing(true);
-        centerLayout.setWidth(400, Unit.PIXELS);
-        centerLayout.setHeight(100, Unit.PERCENTAGE);
+        layout.addComponent(new CalendarTest());
 
-        Label titleLabel = new Label("Active tasks");
-        titleLabel.setStyleName(ValoTheme.LABEL_H1);
-        centerLayout.addComponent(titleLabel);
-
-        Button addButton = new Button("Add", FontAwesome.PLUS);
-        addButton.focus();
-        addButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
-        addButton.addClickListener(event -> {
-            Object itemId = tasksGrid.addRow(false, "New task");
-            tasksGrid.select(itemId);
-        });
-
-        Button removeButton = new Button("Remove", FontAwesome.TRASH_O);
-        removeButton.setEnabled(false);
-        removeButton.addClickListener(event -> {
-            Object selectedItemId = tasksGrid.getSelectedRow();
-            if (selectedItemId != null) {
-                Container.Indexed ds = tasksGrid.getContainerDataSource();
-                ds.removeItem(selectedItemId);
-                removeButton.setEnabled(false);
-            }
-        });
-
-        HorizontalLayout buttonsLayout = new HorizontalLayout();
-        buttonsLayout.setSpacing(true);
-        buttonsLayout.addComponent(addButton);
-        buttonsLayout.addComponent(removeButton);
-
-        centerLayout.addComponent(buttonsLayout);
-        centerLayout.setComponentAlignment(buttonsLayout, Alignment.MIDDLE_RIGHT);
-
-        tasksGrid = new Grid();
-        tasksGrid.setSizeFull();
-        tasksGrid.setEditorEnabled(true);
-        tasksGrid.setSelectionMode(Grid.SelectionMode.SINGLE);
-
-        tasksGrid.addColumn("Done", Boolean.class);
-        tasksGrid.getColumn("Done").setWidth(80);
-        tasksGrid.getColumn("Done").setConverter(new StringToBooleanConverter("Yes", "No"));
-
-        tasksGrid.addColumn("Summary");
-
-        tasksGrid.addSelectionListener(event -> {
-            boolean enableRemove = !event.getSelected().isEmpty();
-            removeButton.setEnabled(enableRemove);
-        });
-
-        centerLayout.addComponent(tasksGrid);
-        centerLayout.setExpandRatio(tasksGrid, 1);
-
-        layout.addComponent(centerLayout);
-        layout.setComponentAlignment(centerLayout, Alignment.TOP_CENTER);
 
         setContent(layout);
     }
