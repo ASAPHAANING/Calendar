@@ -1,9 +1,10 @@
 package org.strangeway.electronvaadin.app;
 
+import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.Events;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
-import com.vaadin.data.Container;
-import com.vaadin.data.util.converter.StringToBooleanConverter;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -12,6 +13,10 @@ import com.vaadin.ui.themes.ValoTheme;
 import elemental.json.Json;
 import elemental.json.JsonArray;
 import elemental.json.JsonString;
+
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Yuriy Artamonov
@@ -26,6 +31,8 @@ public class MainUI extends UI {
     protected void init(VaadinRequest request) {
         initLayout();
         initElectronApi();
+
+
     }
 
     private void initLayout() {
@@ -35,7 +42,11 @@ public class MainUI extends UI {
 
 
         setContent(layout);
-    }
+
+
+
+
+}
 
     private void initElectronApi() {
         JavaScript js = getPage().getJavaScript();

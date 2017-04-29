@@ -43,8 +43,8 @@ app.on('ready', function () {
     const openWindow = function () {
         mainWindow = new BrowserWindow({
             title: 'TODO List - Electron Vaadin application',
-            width: 500,
-            height: 768
+            width: 1800,
+            height: 1013
         });
 
         const menuTemplate = [

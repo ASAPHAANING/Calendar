@@ -3,12 +3,13 @@ package org.strangeway.electronvaadin.app;
 /**
  * Created by haaning on 4/22/17.
  */
+        import java.io.IOException;
         import java.text.DateFormatSymbols;
-        import java.util.Date;
-        import java.util.GregorianCalendar;
-        import java.util.Locale;
-        import java.util.TimeZone;
+        import java.util.*;
 
+        import com.google.api.client.util.DateTime;
+        import com.google.api.services.calendar.model.Event;
+        import com.google.api.services.calendar.model.Events;
         import com.vaadin.annotations.Theme;
         import com.vaadin.data.Item;
         import com.vaadin.data.Property;
@@ -171,6 +172,84 @@ public class CalendarTest extends GridLayout implements View {
         initCalendar();
         initLayoutContent();
         addInitialEvents();
+        add10RecentGooogleEvents();
+    }
+
+    private void add10RecentGooogleEvents() {
+        Date originalDate = calendar.getTime();
+        Date today = getToday();
+
+                 /*
+        Google API
+         */
+
+        GoogleCalendar googleCalendar = new GoogleCalendar();
+
+        // Build a new authorized API client service.
+        // Note: Do not confuse this class with the
+        //   com.google.api.services.calendar.model.Calendar class.
+        com.google.api.services.calendar.Calendar service =
+                null;
+        try {
+            service = googleCalendar.getCalendarService();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // List the next 10 events from the primary calendar.
+        DateTime now = new DateTime(System.currentTimeMillis());
+        Events events = null;
+        try {
+            events = service.events().list("primary")
+                    .setMaxResults(20)
+                    .setTimeMin(now)
+                    .setOrderBy("startTime")
+                    .setSingleEvents(true)
+                    .execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<com.google.api.services.calendar.model.Event> items = events.getItems();
+        if (items.size() == 0) {
+            System.out.println("No upcoming events found.");
+        } else {
+            System.out.println("Upcoming events");
+            for (com.google.api.services.calendar.model.Event event : items) {
+                DateTime start = event.getStart().getDateTime();
+                DateTime end = event.getEnd().getDateTime();
+
+                if (start == null) {
+                    start = event.getStart().getDate();
+                }
+                if(end == null) {
+                    end = event.getEnd().getDate();
+                }
+
+                /*System.out.print(event.getEnd().getDateTime().getValue());
+                System.out.println(new Date(end.getValue()));*/
+                //CalendarTestEvent googleEvent = getNewEvent(event.getSummary(), new Date(start.getValue()), getGoogleEndDate(end,calendar));
+                CalendarTestEvent googleEvent = getNewEvent(event.getSummary(), new Date(start.getValue()), new Date(end.getValue()));
+
+                googleEvent.setStyleName("color4");
+                googleEvent.setDescription("Some description.");
+
+                dataSource.addEvent(googleEvent);
+                System.out.printf("%s (%s)\n", event.getSummary(), start);
+
+            }
+        }
+
+        /*event.setAllDay(true);
+        event.setStyleName("color4");
+        event.setDescription("Description for the whole week event.");
+        dataSource.addEvent(event);*/
+    }
+
+    private Date getGoogleEndDate(DateTime datetime, java.util.Calendar currentCalendar)
+    {
+        currentCalendar.setTime(new Date(datetime.getValue()));
+        return currentCalendar.getTime();
+
     }
 
     private Date resolveFirstDateOfWeek(Date today,
