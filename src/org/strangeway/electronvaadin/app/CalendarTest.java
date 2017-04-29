@@ -231,7 +231,7 @@ public class CalendarTest extends GridLayout implements View {
                 CalendarTestEvent googleEvent = getNewEvent(event.getSummary(), new Date(start.getValue()), new Date(end.getValue()));
 
                 googleEvent.setStyleName("color4");
-                googleEvent.setDescription("Some description.");
+                googleEvent.setDescription(event.getDescription());
 
                 dataSource.addEvent(googleEvent);
                 System.out.printf("%s (%s)\n", event.getSummary(), start);
@@ -245,12 +245,6 @@ public class CalendarTest extends GridLayout implements View {
         dataSource.addEvent(event);*/
     }
 
-    private Date getGoogleEndDate(DateTime datetime, java.util.Calendar currentCalendar)
-    {
-        currentCalendar.setTime(new Date(datetime.getValue()));
-        return currentCalendar.getTime();
-
-    }
 
     private Date resolveFirstDateOfWeek(Date today,
                                         java.util.Calendar currentCalendar) {
