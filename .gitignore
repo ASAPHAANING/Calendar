@@ -6,5 +6,5 @@ out/
 electron-src/node_modules/
 electron-src/electron-vaadin/
 electron-src/electron-vaadin-*/
-StoredCredentials
+StoredCredential
 README
