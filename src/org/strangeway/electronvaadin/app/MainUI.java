@@ -4,6 +4,7 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
 import com.vaadin.annotations.PreserveOnRefresh;
+import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
@@ -23,21 +24,24 @@ import java.util.List;
  */
 @PreserveOnRefresh
 @Theme(ValoTheme.THEME_NAME)
+@Push
 public class MainUI extends UI {
 
     private Grid tasksGrid;
+    private Label pushlbltest = new Label("Push");
 
     @Override
     protected void init(VaadinRequest request) {
         initLayout();
         initElectronApi();
-
+        new PushTestThread().start();
 
     }
 
     private void initLayout() {
         VerticalLayout layout = new VerticalLayout();
 
+        layout.addComponent(pushlbltest);
         layout.addComponent(new CalendarTest());
 
 
@@ -145,5 +149,36 @@ public class MainUI extends UI {
         confirmationWindow.setContent(layout);
 
         getUI().addWindow(confirmationWindow);
+    }
+
+    class PushTestThread extends Thread {
+        int count = 0;
+
+        @Override
+        public void run() {
+            try {
+                // Update the data for a while
+                while (count < 100) {
+                    Thread.sleep(1000);
+
+                    access(new Runnable() {
+                        @Override
+                        public void run() {
+                           pushlbltest.setValue(""+count++);
+                        }
+                    });
+                }
+
+                // Inform that we have stopped running
+                access(new Runnable() {
+                    @Override
+                    public void run() {
+                        pushlbltest.setValue("Done!");
+                    }
+                });
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
